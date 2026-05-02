@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AP-Corse — Documentation GSB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=Fraunces:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════ */
+:root {
+  --bg: #0d0f14;
+  --bg2: #13161e;
+  --bg3: #1a1e2a;
+  --border: #252934;
+  --accent: #6ee7b7;
+  --accent2: #38bdf8;
+  --accent3: #f472b6;
+  --text: #e2e8f0;
+  --text-dim: #64748b;
+  --text-mid: #94a3b8;
+  --sidebar-w: 280px;
+  --header-h: 56px;
+  --font-body: 'Syne', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-display: 'Fraunces', serif;
+  --radius: 8px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: var(--header-h) 1fr;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════ */
+.header {
+  grid-column: 1 / -1;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+.header-logo-mark {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: #0d0f14;
+  flex-shrink: 0;
+}
+.header-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.header-sep { flex: 1; }
+
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  border-radius: var(--radius);
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+.hamburger {
+  display: none;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+  border-radius: var(--radius);
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar {
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  position: sticky;
+  top: var(--header-h);
+  height: calc(100vh - var(--header-h));
+  padding: 24px 0;
+}
+
+.nav-section {
+  margin-bottom: 8px;
+}
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0 20px 8px;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  color: var(--text-mid);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.15s;
+  border-left: 2px solid transparent;
+  cursor: pointer;
+}
+.nav-link:hover {
+  color: var(--text);
+  background: var(--bg3);
+  border-left-color: var(--border);
+}
+.nav-link.active {
+  color: var(--accent);
+  background: rgba(110, 231, 183, 0.06);
+  border-left-color: var(--accent);
+}
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.nav-link.active .nav-icon { opacity: 1; }
+
+.nav-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 20px;
+}
+
+/* TOC sub-items */
+.nav-toc {
+  display: none;
+  padding-left: 46px;
+}
+.nav-toc.open { display: block; }
+.nav-toc a {
+  display: block;
+  padding: 5px 0;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-decoration: none;
+  border-left: 1px solid var(--border);
+  padding-left: 12px;
+  margin-left: -12px;
+  transition: all 0.15s;
+}
+.nav-toc a:hover { color: var(--text-mid); }
+
+/* ═══════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════ */
+.main {
+  overflow-y: auto;
+  padding: 48px 56px 80px;
+  max-width: 860px;
+}
+
+/* Pages */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ═══════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════ */
+h1 {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 24px;
+  letter-spacing: -0.02em;
+}
+h1 .accent { color: var(--accent); }
+
+h2 {
+  font-family: var(--font-body);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 40px 0 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+h2::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 18px;
+  background: linear-gradient(to bottom, var(--accent), var(--accent2));
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 28px 0 12px;
+}
+
+p {
+  color: var(--text-mid);
+  margin-bottom: 16px;
+}
+
+strong { color: var(--text); font-weight: 700; }
+
+a { color: var(--accent2); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 32px 0;
+}
+
+blockquote {
+  border-left: 3px solid var(--accent);
+  padding: 12px 20px;
+  background: rgba(110, 231, 183, 0.05);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  margin: 20px 0;
+  font-size: 13.5px;
+  color: var(--text-mid);
+}
+
+/* ═══════════════════════════════════════════
+   TABLES
+═══════════════════════════════════════════ */
+.table-wrap { overflow-x: auto; margin: 20px 0; border-radius: var(--radius); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+thead { background: var(--bg3); }
+th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 16px;
+  color: var(--text-mid);
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
+td code, th code { font-size: 12px; }
+
+/* ═══════════════════════════════════════════
+   CODE
+═══════════════════════════════════════════ */
+code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: var(--accent);
+}
+
+pre {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  overflow-x: auto;
+  margin: 20px 0;
+  position: relative;
+}
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.65;
+}
+
+.code-block {
+  margin: 20px 0;
+}
+.code-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  padding: 6px 16px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.code-label::before {
+  content: '';
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.6;
+}
+.code-label + pre {
+  border-radius: 0 0 var(--radius) var(--radius);
+  margin-top: 0;
+}
+
+/* Language syntax highlight classes */
+.kw { color: #f472b6; }
+.fn { color: #38bdf8; }
+.st { color: #6ee7b7; }
+.cm { color: #475569; font-style: italic; }
+.nm { color: #fb923c; }
+.tp { color: #a78bfa; }
+
+/* ═══════════════════════════════════════════
+   CARDS & BADGES
+═══════════════════════════════════════════ */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.card:hover {
+  border-color: var(--accent);
+  background: rgba(110, 231, 183, 0.04);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: 18px;
+}
+.card-icon.green { background: rgba(110,231,183,0.12); }
+.card-icon.blue  { background: rgba(56,189,248,0.12); }
+.card-icon.pink  { background: rgba(244,114,182,0.12); }
+
+.card-title { font-weight: 700; font-size: 14px; margin-bottom: 6px; }
+.card-desc { font-size: 12.5px; color: var(--text-dim); line-height: 1.5; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+.badge-green { background: rgba(110,231,183,0.12); color: var(--accent); border: 1px solid rgba(110,231,183,0.25); }
+.badge-blue  { background: rgba(56,189,248,0.12);  color: var(--accent2); border: 1px solid rgba(56,189,248,0.25); }
+.badge-pink  { background: rgba(244,114,182,0.12); color: var(--accent3); border: 1px solid rgba(244,114,182,0.25); }
+.badge-gray  { background: rgba(100,116,139,0.12); color: var(--text-mid); border: 1px solid rgba(100,116,139,0.25); }
+
+/* ═══════════════════════════════════════════
+   HERO (Home page)
+═══════════════════════════════════════════ */
+.hero {
+  padding: 32px 0 48px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+  position: relative;
+}
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 24px; height: 1px;
+  background: var(--accent);
+}
+.hero h1 { margin-bottom: 16px; }
+.hero-sub {
+  font-size: 15px;
+  color: var(--text-mid);
+  max-width: 540px;
+  margin-bottom: 24px;
+}
+.hero-authors {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-dim);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 6px 14px;
+}
+.hero-authors span { color: var(--accent2); }
+
+/* ═══════════════════════════════════════════
+   SCHEMA / INFRA
+═══════════════════════════════════════════ */
+.schema-box {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-mid);
+  overflow-x: auto;
+  line-height: 1.7;
+  margin: 20px 0;
+  white-space: pre;
+}
+
+/* ═══════════════════════════════════════════
+   SECTION HEADER (Mission pages)
+═══════════════════════════════════════════ */
+.page-hero {
+  padding: 32px 0 40px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+.page-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 10px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+.page-hero h1 { margin-bottom: 12px; }
+.page-hero-desc { color: var(--text-mid); font-size: 15px; max-width: 600px; }
+
+/* Stack badges row */
+.stack-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+/* ═══════════════════════════════════════════
+   API TABLE
+═══════════════════════════════════════════ */
+.api-row td:first-child { font-family: var(--font-mono); font-size: 12px; }
+.method { display: inline-block; font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
+.method-get  { background: rgba(110,231,183,0.12); color: var(--accent); }
+.method-post { background: rgba(244,114,182,0.12); color: var(--accent3); }
+.method-put  { background: rgba(251,146,60,0.12);  color: #fb923c; }
+.method-del  { background: rgba(239,68,68,0.12);   color: #f87171; }
+
+/* ═══════════════════════════════════════════
+   LISTS
+═══════════════════════════════════════════ */
+ul, ol {
+  padding-left: 20px;
+  margin-bottom: 16px;
+  color: var(--text-mid);
+}
+li { margin-bottom: 4px; }
+li strong { color: var(--text); }
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.content-footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: gap;
+  gap: 12px;
+}
+.content-footer-nav {
+  display: flex;
+  gap: 8px;
+}
+.footer-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-mid);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.footer-nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+.footer-copy {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: var(--header-h) 1fr;
+  }
+  .sidebar {
+    position: fixed;
+    top: var(--header-h);
+    left: 0;
+    width: var(--sidebar-w);
+    height: calc(100vh - var(--header-h));
+    z-index: 90;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { padding: 32px 24px 60px; }
+  .hamburger { display: flex; }
+  h1 { font-size: 1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ══════════ HEADER ══════════ -->
+  <header class="header">
+    <a class="header-logo" onclick="showPage('home')" style="cursor:pointer">
+      <div class="header-logo-mark">AP</div>
+      <span class="header-title">AP-Corse</span>
+    </a>
+    <div class="header-sep"></div>
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5h16M4 12h16M4 19h16"/></svg>
+    </button>
+  </header>
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <nav class="sidebar" id="sidebar">
+    <div class="nav-section">
+      <div class="nav-section-label">Documentation</div>
+      <a class="nav-link active" id="nav-home" onclick="showPage('home')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        Accueil
+      </a>
+    </div>
+
+    <div class="nav-divider"></div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Missions</div>
+      <a class="nav-link" id="nav-m1" onclick="showPage('mission1')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M10 4v4M2 8h20M6 4v4"/></svg>
+        Mission 1 — GSBCongés
+      </a>
+      <a class="nav-link" id="nav-m2" onclick="showPage('mission2')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+        Mission 2 — GSBSalaires
+      </a>
+      <a class="nav-link" id="nav-m3" onclick="showPage('mission3')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+        Mission 3 — GSBNotes
+      </a>
+    </div>
+  </nav>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <main class="main" id="main">
+
+    <!-- ─────────────────────────────
+         PAGE : ACCUEIL
+    ───────────────────────────────── -->
+    <div class="page active" id="page-home">
+      <div class="hero">
+        <div class="hero-eyebrow">AP SIO 2 · 2025–2026</div>
+        <h1>Documentation <span class="accent">AP-Corse</span></h1>
+        <p class="hero-sub">
+          Documentation officielle des missions GSB — trois applications interconnectées autour d'un système de gestion RH pour le réseau <strong>GSB (Groupement de Santé de Corse)</strong>.
+        </p>
+        <div class="hero-authors">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Matthieu Doolaeghe</span> · <span>Wassil Henni</span> · <span>Lucas Deudon</span>
+        </div>
+      </div>
+
+      <h2>Infrastructure réseau — Mission 0</h2>
+      <p>Mise en place d'une infrastructure réseau simple. Tableau récapitulatif des rôles et adresses IP :</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Rôle</th><th>Adresse IPv4</th></tr></thead>
+          <tbody>
+            <tr><td>Serveur Web (Laravel)</td><td><code>172.23.80.1</code></td></tr>
+            <tr><td>Serveur BDD (MySQL)</td><td><code>172.23.80.2</code></td></tr>
+            <tr><td>Serveur de Production</td><td><code>172.23.80.11</code></td></tr>
+            <tr><td>Poste développeur 1</td><td><code>172.23.80.9</code></td></tr>
+            <tr><td>Poste développeur 2</td><td><code>172.23.80.10</code></td></tr>
+            <tr><td>Poste développeur 3</td><td><code>172.23.80.12</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Vue d'ensemble des missions</h2>
+      <div class="cards">
+        <a class="card" onclick="showPage('mission1')">
+          <div class="card-icon green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M10 4v4M2 8h20M6 4v4"/></svg>
+          </div>
+          <div class="card-title">Mission 1 — GSBCongés</div>
+          <div class="card-desc">Application Desktop C# (.NET 8 / Windows Forms) pour la gestion des demandes de congé.</div>
+        </a>
+        <a class="card" onclick="showPage('mission2')">
+          <div class="card-icon blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+          </div>
+          <div class="card-title">Mission 2 — GSBSalaires</div>
+          <div class="card-desc">Application Web Laravel 12 / PHP 8.2 — système RH central avec API REST JWT.</div>
+        </a>
+        <a class="card" onclick="showPage('mission3')">
+          <div class="card-icon pink">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+          </div>
+          <div class="card-title">Mission 3 — GSBNotes</div>
+          <div class="card-desc">Application Mobile Flutter / Dart multi-plateforme — consultation et notation des praticiens.</div>
+        </a>
+      </div>
+
+      <h2>Schéma d'intégration</h2>
+      <div class="schema-box">┌─────────────────────┐        ┌──────────────────────────┐
+│   GSBCongés (C#)     │        │     GSBNotes (Flutter)    │
+│   Desktop Windows   │        │  Mobile / Multi-platform │
+└────────┬────────────┘        └────────────┬─────────────┘
+         │ SQL direct                        │ HTTP REST + JWT
+         │                                   │
+         ▼                                   ▼
+┌─────────────────────────────────────────────────────────┐
+│              MySQL — 172.23.80.2 — BDD gsb              │
+│                                                         │
+│  praticien · congé · connexion · note · notification    │
+│  echelon · ville · expert · etat · etat_lecture         │
+└────────────────────────────┬────────────────────────────┘
+                             │ Eloquent ORM
+                             ▼
+                  ┌─────────────────────┐
+                  │    GSBSalaires (Laravel)  │
+                  │    172.23.80.1      │
+                  │  API REST + Web UI  │
+                  └─────────────────────┘</div>
+
+      <div class="content-footer">
+        <div class="footer-copy">Copyright &copy; 2025 · AP-Corse</div>
+        <div class="content-footer-nav">
+          <button class="footer-nav-btn" onclick="showPage('mission1')">
+            Mission 1 →
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────
+         PAGE : MISSION 1
+    ───────────────────────────────── -->
+    <div class="page" id="page-mission1">
+      <div class="page-hero">
+        <div class="page-hero-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="M10 4v4M2 8h20M6 4v4"/></svg>
+          Mission 1
+        </div>
+        <h1>GSBCongés <span class="accent">— C#</span></h1>
+        <p class="page-hero-desc">Application desktop Windows Forms (.NET) pour la gestion des demandes de congé des praticiens du réseau GSB. Deux interfaces distinctes selon le rôle : praticien ou RH.</p>
+        <div class="stack-row">
+          <span class="badge badge-green">C#</span>
+          <span class="badge badge-green">.NET / WinForms</span>
+          <span class="badge badge-blue">MySQL</span>
+          <span class="badge badge-blue">Dapper</span>
+          <span class="badge badge-pink">BouncyCastle</span>
+        </div>
+      </div>
+
+      <h2>Architecture</h2>
+      <div class="schema-box">GestionConges/
+├── Models/
+│   ├── Utilisateur.cs         # Entité utilisateur (praticien ou RH)
+│   └── Conge.cs               # Entité demande de congé
+├── Db.cs                      # Connexion MySQL (classe statique)
+├── Program.cs                 # Point d'entrée → ouvre LoginForm
+├── LoginForm.cs               # Formulaire de connexion
+├── LoginForm_Designer.cs      # Contrôles : txtEmail, txtPassword, btnLogin
+├── PraticienForm.cs           # Interface praticien (demande de congé)
+├── PraticienForm_Designer.cs  # Contrôles : lblWelcome, dtDebut, dtFin, btnDemander
+├── RhForm.cs                  # Interface RH (liste, filtres, accept/refus)
+└── RhForm_Designer.cs         # Contrôles : DataGridView, boutons filtre/action</div>
+
+      <h2>Base de données</h2>
+      <p>Connexion via la classe statique <code>Db</code> pointant sur <code>172.23.80.2</code>, base <code>gsbeh</code>.</p>
+      <div class="code-block">
+        <div class="code-label">Db.cs — Connexion MySQL</div>
+        <pre><code><span class="kw">public static class</span> <span class="tp">Db</span>
+{
+    <span class="kw">private static string</span> connectionString =
+        <span class="st">"Server=172.23.80.2;Database=gsbeh;Uid=wassil;Pwd=1234;"</span>;
+
+    <span class="kw">public static</span> <span class="tp">MySqlConnection</span> <span class="fn">GetConnection</span>()
+    {
+        <span class="kw">return new</span> <span class="tp">MySqlConnection</span>(connectionString);
+    }
+}</code></pre>
+      </div>
+
+      <h3>Table <code>utilisateurs</code></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>int (PK)</td><td>Identifiant unique</td></tr>
+            <tr><td><code>nom</code></td><td>string</td><td>Nom de famille</td></tr>
+            <tr><td><code>prenom</code></td><td>string</td><td>Prénom</td></tr>
+            <tr><td><code>email</code></td><td>string</td><td>Email — utilisé pour la connexion</td></tr>
+            <tr><td><code>pwd</code></td><td>string</td><td>Mot de passe (comparaison directe)</td></tr>
+            <tr><td><code>role</code></td><td>string</td><td><code>"praticien"</code> → PraticienForm, sinon → RhForm</td></tr>
+            <tr><td><code>conges_restant</code></td><td>int</td><td>Solde de congés disponibles (en jours)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Table <code>conges</code></h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>id</code></td><td>int (PK)</td><td>Identifiant unique</td></tr>
+            <tr><td><code>idUtilisateurFK</code></td><td>int (FK)</td><td>Praticien demandeur</td></tr>
+            <tr><td><code>dateDebut</code></td><td>datetime</td><td>Premier jour de congé</td></tr>
+            <tr><td><code>dateFin</code></td><td>datetime</td><td>Dernier jour de congé</td></tr>
+            <tr><td><code>statut</code></td><td>string</td><td><code>EN ATTENTE</code> · <code>accepte</code> · <code>refuse</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Modèles</h2>
+      <div class="code-block">
+        <div class="code-label">Utilisateur.cs</div>
+        <pre><code><span class="kw">public class</span> <span class="tp">Utilisateur</span>
+{
+    <span class="kw">public int</span>     Id             { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string?</span> Nom            { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string?</span> Prenom         { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string?</span> Email          { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string?</span> MotDePasse     { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string?</span> Role           { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span>     conges_restant { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Conge.cs</div>
+        <pre><code><span class="kw">public class</span> <span class="tp">Conge</span>
+{
+    <span class="kw">public int</span>      Id            { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span>      UtilisateurId { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public DateTime</span> DateDebut     { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public DateTime</span> DateFin       { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public string</span>   Statut        { <span class="kw">get</span>; <span class="kw">set</span>; }
+}</code></pre>
+      </div>
+
+      <h2>Écrans et flux</h2>
+
+      <h3>LoginForm — Connexion</h3>
+      <p>Point d'entrée de l'application. Authentification par <strong>email + mot de passe</strong> via Dapper. Le rôle détermine le formulaire suivant.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Contrôle</th><th>Type</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>txtEmail</code></td><td>TextBox</td><td>Saisie de l'email</td></tr>
+            <tr><td><code>txtPassword</code></td><td>TextBox (PasswordChar)</td><td>Saisie du mot de passe</td></tr>
+            <tr><td><code>btnLogin</code></td><td>Button</td><td>Déclenche la vérification SQL</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-label">LoginForm.cs — btnLogin_Click</div>
+        <pre><code><span class="kw">var</span> user = conn.<span class="fn">QueryFirstOrDefault</span>&lt;<span class="tp">Utilisateur</span>&gt;(
+    <span class="st">"SELECT * FROM utilisateurs WHERE email=@Email AND pwd=@Mdp"</span>,
+    <span class="kw">new</span> { Email = txtEmail.Text.<span class="fn">Trim</span>(), Mdp = txtPassword.Text.<span class="fn">Trim</span>() });
+
+<span class="kw">if</span> (user != <span class="kw">null</span>)
+{
+    <span class="kw">if</span> (user.Role == <span class="st">"praticien"</span>)
+        <span class="kw">new</span> <span class="tp">PraticienForm</span>(user).<span class="fn">Show</span>();
+    <span class="kw">else</span>
+        <span class="kw">new</span> <span class="tp">RhForm</span>(user).<span class="fn">Show</span>();
+    <span class="kw">this</span>.<span class="fn">Hide</span>();
+}
+<span class="kw">else</span>
+    MessageBox.<span class="fn">Show</span>(<span class="st">"Identifiants invalides !"</span>, <span class="st">"Erreur"</span>,
+        MessageBoxButtons.OK, MessageBoxIcon.Warning);</code></pre>
+      </div>
+
+      <h3>PraticienForm — Interface praticien</h3>
+      <p>Permet au praticien connecté de soumettre une demande de congé. Le solde restant est affiché dès l'ouverture et contrôlé avant la soumission.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Contrôle</th><th>Type</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>lblWelcome</code></td><td>Label</td><td>Affiche le prénom et le solde de congés restants</td></tr>
+            <tr><td><code>dtDebut</code></td><td>DateTimePicker</td><td>Date de début de la demande</td></tr>
+            <tr><td><code>dtFin</code></td><td>DateTimePicker</td><td>Date de fin de la demande</td></tr>
+            <tr><td><code>btnDemander</code></td><td>Button</td><td>Valide et insère la demande en BDD</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="code-block">
+        <div class="code-label">PraticienForm.cs — btnDemander_Click</div>
+        <pre><code><span class="kw">var</span> jours = (dtFin.Value.Date - dtDebut.Value.Date).Days + <span class="nm">1</span>;
+
+<span class="kw">if</span> (jours &lt;= <span class="nm">0</span>) { MessageBox.<span class="fn">Show</span>(<span class="st">"Dates invalides"</span>); <span class="kw">return</span>; }
+<span class="kw">if</span> (jours &gt; _user.conges_restant) { MessageBox.<span class="fn">Show</span>(<span class="st">"Pas assez de congés restants !"</span>); <span class="kw">return</span>; }
+
+conn.<span class="fn">Execute</span>(
+    <span class="st">"INSERT INTO conges (idUtilisateurFK, dateDebut, dateFin, statut) VALUES (@uid, @debut, @fin, @attente)"</span>,
+    <span class="kw">new</span> { uid = _user.Id, debut = dtDebut.Value.Date,
+          fin = dtFin.Value.Date, attente = <span class="st">"EN ATTENTE"</span> }
+);
+MessageBox.<span class="fn">Show</span>(<span class="st">"Demande envoyée !"</span>);</code></pre>
+      </div>
+
+      <h3>RhForm — Interface RH</h3>
+      <p>Interface d'administration des congés. Le RH peut filtrer les demandes par statut, consulter le détail d'une ligne et accepter ou refuser dans une transaction SQL.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Contrôle</th><th>Type</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>dataGridView1</code></td><td>DataGridView</td><td>Liste des congés (lecture seule, sélection pleine ligne)</td></tr>
+            <tr><td><code>btnTous</code></td><td>Button</td><td>Afficher toutes les demandes</td></tr>
+            <tr><td><code>btnEnAttente</code></td><td>Button</td><td>Filtrer sur statut <code>en attente</code></td></tr>
+            <tr><td><code>btnAccepteFiltre</code></td><td>Button</td><td>Filtrer sur statut <code>accepte</code></td></tr>
+            <tr><td><code>btnRefuseFiltre</code></td><td>Button</td><td>Filtrer sur statut <code>refuse</code></td></tr>
+            <tr><td><code>lblDemande</code></td><td>Label</td><td>Affiche « Demande de congés de Prénom Nom »</td></tr>
+            <tr><td><code>lblDuree</code></td><td>Label</td><td>Affiche la durée calculée en jours</td></tr>
+            <tr><td><code>lblStatut</code></td><td>Label</td><td>Affiche le statut actuel de la demande sélectionnée</td></tr>
+            <tr><td><code>btnAccepter</code></td><td>Button</td><td>Passe le statut à <code>accepte</code> (transaction SQL)</td></tr>
+            <tr><td><code>btnRefuser</code></td><td>Button</td><td>Passe le statut à <code>refuse</code></td></tr>
+            <tr><td><code>btnDemanderConge</code></td><td>Button</td><td>Ouvre PraticienForm pour que le RH pose un congé</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">RhForm.cs — LoadConges() — Chargement avec filtre</div>
+        <pre><code><span class="kw">string</span> sql = <span class="st">"SELECT c.id, c.idUtilisateurFK, u.nom, u.prenom, "</span> +
+             <span class="st">"c.dateDebut, c.dateFin, c.statut "</span> +
+             <span class="st">"FROM conges c JOIN utilisateurs u ON c.idUtilisateurFK = u.id"</span>;
+
+<span class="kw">var</span> data = statutFiltre != <span class="st">"Tous"</span>
+    ? conn.<span class="fn">Query</span>(sql + <span class="st">" WHERE c.statut = @statut"</span>, <span class="kw">new</span> { statut = statutFiltre.<span class="fn">ToLower</span>() }).<span class="fn">ToList</span>()
+    : conn.<span class="fn">Query</span>(sql).<span class="fn">ToList</span>();
+
+dataGridView1.DataSource = data;
+
+<span class="cm">// Colonnes masquées (techniques)</span>
+dataGridView1.Columns[<span class="st">"id"</span>].Visible = <span class="kw">false</span>;
+dataGridView1.Columns[<span class="st">"idUtilisateurFK"</span>].Visible = <span class="kw">false</span>;</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">RhForm.cs — btnAccepter_Click — Transaction SQL</div>
+        <pre><code><span class="kw">int</span> congeId      = Convert.<span class="fn">ToInt32</span>(dataGridView1.CurrentRow.Cells[<span class="st">"id"</span>].Value);
+<span class="kw">int</span> utilisateurId = Convert.<span class="fn">ToInt32</span>(dataGridView1.CurrentRow.Cells[<span class="st">"idUtilisateurFK"</span>].Value);
+<span class="kw">int</span> jours = (fin.Date - debut.Date).Days + <span class="nm">1</span>;
+
+<span class="kw">using</span> (<span class="kw">var</span> tr = conn.<span class="fn">BeginTransaction</span>())
+{
+    conn.<span class="fn">Execute</span>(<span class="st">"UPDATE conges SET statut='accepte' WHERE id=@id"</span>,
+        <span class="kw">new</span> { id = congeId }, tr);
+    tr.<span class="fn">Commit</span>();
+}
+<span class="fn">LoadConges</span>();</code></pre>
+      </div>
+
+      <h2>Flux de navigation</h2>
+      <div class="schema-box">Program.cs → LoginForm
+                    │
+         ┌──────────┴──────────┐
+         │ role = "praticien"  │  role ≠ "praticien"
+         ▼                     ▼
+  PraticienForm            RhForm
+  ─────────────            ──────
+  lblWelcome               DataGridView (tous les congés)
+  dtDebut / dtFin          Filtres : Tous / En attente / Accepté / Refusé
+  btnDemander              Sélection → lblDemande + lblDuree + lblStatut
+  ↓ INSERT conges          btnAccepter → UPDATE statut='accepte' (transaction)
+                           btnRefuser  → UPDATE statut='refuse'
+                           btnDemanderConge → ouvre PraticienForm</div>
+
+      <div class="content-footer">
+        <div class="footer-copy">Copyright &copy; 2025 · AP-Corse</div>
+        <div class="content-footer-nav">
+          <button class="footer-nav-btn" onclick="showPage('home')">← Accueil</button>
+          <button class="footer-nav-btn" onclick="showPage('mission2')">Mission 2 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────
+         PAGE : MISSION 2
+    ───────────────────────────────── -->
+    <div class="page" id="page-mission2">
+      <div class="page-hero">
+        <div class="page-hero-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+          Mission 2
+        </div>
+        <h1>GSBSalaires <span class="accent">— Laravel</span></h1>
+        <p class="page-hero-desc">Application web Laravel permettant la gestion des praticiens du réseau GSB. Interface Blade + Tailwind CSS pour le service RH, avec authentification par session et gestion de la grille salariale.</p>
+        <div class="stack-row">
+          <span class="badge badge-blue">PHP</span>
+          <span class="badge badge-blue">Laravel</span>
+          <span class="badge badge-green">MySQL</span>
+          <span class="badge badge-gray">Tailwind CSS</span>
+          <span class="badge badge-gray">Session Auth</span>
+          <span class="badge badge-pink">SHA-256 + HMAC</span>
+        </div>
+      </div>
+
+      <h2>Architecture</h2>
+      <div class="schema-box">GSBSalaires/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── AuthController.php         # Connexion / déconnexion (session)
+│   │   │   └── PraticienController.php    # Liste, détail, ancienneté, stats
+│   │   └── Middleware/
+│   │       └── CheckAuth.php              # Middleware de protection des routes
+│   └── Models/
+│       ├── Praticien.php                  # Modèle principal + accesseurs
+│       ├── Utilisateur.php               # Authentification (SHA-256 + HMAC)
+│       ├── TypePraticien.php             # Types de praticiens
+│       ├── GrilleSalariale.php           # Grille échelon/salaire
+│       ├── Ville.php                     # Ville + code postal
+│       ├── Departement.php               # Département
+│       └── User.php                      # Modèle Laravel par défaut
+├── routes/
+│   └── web.php                           # Routes (login + middleware auth.custom)
+└── resources/views/
+    ├── layout.blade.php                  # Layout général (nav + flash + footer)
+    ├── auth/
+    │   └── login.blade.php               # Page de connexion
+    └── praticiens/
+        ├── index.blade.php               # Liste filtrée + paginée
+        ├── show.blade.php                # Fiche détaillée + modification ancienneté
+        └── stats.blade.php               # Statistiques globales</div>
+
+      <h2>Routes</h2>
+      <div class="table-wrap">
+        <table class="api-row">
+          <thead><tr><th>Méthode</th><th>URL</th><th>Accès</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/login</code></td><td><span class="badge badge-gray">Public</span></td><td>Afficher le formulaire de connexion</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/login</code></td><td><span class="badge badge-gray">Public</span></td><td>Traiter la connexion</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/logout</code></td><td><span class="badge badge-pink">Auth</span></td><td>Déconnexion + flush session</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/praticiens</code></td><td><span class="badge badge-pink">Auth</span></td><td>Liste des praticiens (filtres + tri + pagination)</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/praticiens/{id}</code></td><td><span class="badge badge-pink">Auth</span></td><td>Fiche détaillée d'un praticien</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/praticiens/{id}/anciennete</code></td><td><span class="badge badge-pink">Admin</span></td><td>Mettre à jour la date d'embauche (trigger SQL)</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/statistiques</code></td><td><span class="badge badge-pink">Auth</span></td><td>Statistiques globales des praticiens</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Modèles</h2>
+      <h3>Praticien</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>nom</code> / <code>prenom</code></td><td>string</td><td>Identité du praticien</td></tr>
+            <tr><td><code>date_embauche</code></td><td>date</td><td>Déclencheur du recalcul via trigger SQL</td></tr>
+            <tr><td><code>anciennete</code></td><td>int</td><td>Calculé automatiquement par trigger</td></tr>
+            <tr><td><code>echelon</code></td><td>int</td><td>Déduit de l'ancienneté via <code>grille_salariale</code></td></tr>
+            <tr><td><code>salaire</code></td><td>float</td><td>Salaire mensuel brut (calculé par trigger)</td></tr>
+            <tr><td><code>code_type_praticien</code></td><td>string (FK)</td><td>Relation vers <code>TypePraticien</code></td></tr>
+            <tr><td><code>id_ville</code></td><td>int (FK)</td><td>Relation vers <code>Ville</code></td></tr>
+            <tr><td><code>coef_notoriete</code></td><td>float</td><td>Coefficient de notoriété</td></tr>
+            <tr><td><code>username</code> / <code>mdp</code></td><td>string</td><td>Identifiants du praticien</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>GrilleSalariale</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>code_type_praticien</code></td><td>string (FK)</td><td>Type de praticien concerné</td></tr>
+            <tr><td><code>echelon</code></td><td>int</td><td>Niveau d'échelon (1 à 13)</td></tr>
+            <tr><td><code>anciennete_min</code></td><td>int</td><td>Ancienneté minimale pour cet échelon</td></tr>
+            <tr><td><code>anciennete_max</code></td><td>int</td><td>Ancienneté maximale pour cet échelon</td></tr>
+            <tr><td><code>salaire</code></td><td>float</td><td>Salaire associé à cet échelon</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Utilisateur</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>nom</code></td><td>string</td><td>Nom d'utilisateur (login)</td></tr>
+            <tr><td><code>mdp</code></td><td>string</td><td>Mot de passe haché (SHA-256 + HMAC)</td></tr>
+            <tr><td><code>isAdmin</code></td><td>int</td><td>1 = Admin, 0 = Utilisateur standard</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Authentification</h2>
+      <p>L'authentification utilise les <strong>sessions Laravel</strong> sans JWT. Le middleware <code>CheckAuth</code> protège toutes les routes privées.</p>
+      <div class="code-block">
+        <div class="code-label">AuthController.php — login()</div>
+        <pre><code><span class="kw">$</span>utilisateur = Utilisateur::<span class="fn">where</span>(<span class="st">'nom'</span>, <span class="kw">$</span>request->nom)-><span class="fn">first</span>();
+
+<span class="kw">if</span> (<span class="kw">$</span>utilisateur && <span class="kw">$</span>utilisateur-><span class="fn">checkPassword</span>(<span class="kw">$</span>request->mdp)) {
+    Session::<span class="fn">put</span>(<span class="st">'user_id'</span>, <span class="kw">$</span>utilisateur->id);
+    Session::<span class="fn">put</span>(<span class="st">'user_nom'</span>, <span class="kw">$</span>utilisateur->nom);
+    Session::<span class="fn">put</span>(<span class="st">'is_admin'</span>, <span class="kw">$</span>utilisateur-><span class="fn">isAdmin</span>());
+    <span class="kw">return</span> redirect()-><span class="fn">route</span>(<span class="st">'praticiens.index'</span>);
+}
+<span class="kw">return</span> back()-><span class="fn">withErrors</span>([<span class="st">'login'</span> => <span class="st">'Identifiants incorrects.'</span>]);</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Utilisateur.php — checkPassword() — SHA-256 + HMAC</div>
+        <pre><code><span class="kw">public function</span> <span class="fn">checkPassword</span>(<span class="kw">$</span>password)
+{
+    <span class="cm">// Vérification HMAC SHA-256</span>
+    <span class="kw">$</span>hashedPassword = <span class="fn">hash_hmac</span>(<span class="st">'sha256'</span>, <span class="kw">$</span>password, config(<span class="st">'app.key'</span>));
+    <span class="kw">if</span> (<span class="kw">$this</span>->mdp === <span class="kw">$</span>hashedPassword) <span class="kw">return true</span>;
+
+    <span class="cm">// Vérification SHA-256 simple</span>
+    <span class="kw">$</span>simpleHash = <span class="fn">hash</span>(<span class="st">'sha256'</span>, <span class="kw">$</span>password);
+    <span class="kw">if</span> (<span class="kw">$this</span>->mdp === <span class="kw">$</span>simpleHash) <span class="kw">return true</span>;
+
+    <span class="kw">return false</span>;
+}</code></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">CheckAuth.php — Middleware</div>
+        <pre><code><span class="kw">if</span> (!Session::<span class="fn">has</span>(<span class="st">'user_id'</span>)) {
+    <span class="kw">return</span> redirect()-><span class="fn">route</span>(<span class="st">'login'</span>)
+        -><span class="fn">with</span>(<span class="st">'error'</span>, <span class="st">'Veuillez vous connecter pour accéder à cette page.'</span>);
+}
+<span class="kw">return</span> <span class="kw">$</span><span class="fn">next</span>(<span class="kw">$</span>request);</code></pre>
+      </div>
+
+      <h2>Filtres et recherche</h2>
+      <p>La liste des praticiens propose des filtres cumulables et un tri dynamique sur les colonnes principales.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Filtre</th><th>Paramètre</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Nom / Prénom</td><td><code>search</code></td><td>LIKE sur <code>nom</code>, <code>prenom</code> et <code>CONCAT(prenom, nom)</code></td></tr>
+            <tr><td>Type de praticien</td><td><code>type</code></td><td>Filtre sur <code>code_type_praticien</code></td></tr>
+            <tr><td>Échelon</td><td><code>echelon</code></td><td>Échelon exact (1 à 13)</td></tr>
+            <tr><td>Ancienneté min/max</td><td><code>anciennete_min</code> / <code>anciennete_max</code></td><td>Plage d'ancienneté en années</td></tr>
+            <tr><td>Salaire min/max</td><td><code>salaire_min</code> / <code>salaire_max</code></td><td>Plage salariale en €</td></tr>
+            <tr><td>Tri</td><td><code>sort_by</code> + <code>sort_order</code></td><td>Colonnes : nom, ancienneté, échelon, salaire</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">PraticienController.php — index() — Filtres cumulables</div>
+        <pre><code><span class="kw">$</span>query = Praticien::<span class="fn">with</span>([<span class="st">'typePraticien'</span>, <span class="st">'ville'</span>]);
+
+<span class="kw">if</span> (<span class="kw">$</span>request-><span class="fn">filled</span>(<span class="st">'search'</span>)) {
+    <span class="kw">$</span>search = <span class="kw">$</span>request->search;
+    <span class="kw">$</span>query-><span class="fn">where</span>(<span class="kw">function</span>(<span class="kw">$</span>q) <span class="kw">use</span> (<span class="kw">$</span>search) {
+        <span class="kw">$</span>q-><span class="fn">where</span>(<span class="st">'nom'</span>, <span class="st">'LIKE'</span>, <span class="st">"%{$search}%"</span>)
+          -><span class="fn">orWhere</span>(<span class="st">'prenom'</span>, <span class="st">'LIKE'</span>, <span class="st">"%{$search}%"</span>)
+          -><span class="fn">orWhere</span>(DB::<span class="fn">raw</span>(<span class="st">"CONCAT(prenom, ' ', nom)"</span>), <span class="st">'LIKE'</span>, <span class="st">"%{$search}%"</span>);
+    });
+}
+<span class="kw">if</span> (<span class="kw">$</span>request-><span class="fn">filled</span>(<span class="st">'type'</span>))         <span class="kw">$</span>query-><span class="fn">where</span>(<span class="st">'code_type_praticien'</span>, <span class="kw">$</span>request->type);
+<span class="kw">if</span> (<span class="kw">$</span>request-><span class="fn">filled</span>(<span class="st">'echelon'</span>))      <span class="kw">$</span>query-><span class="fn">where</span>(<span class="st">'echelon'</span>, <span class="kw">$</span>request->echelon);
+<span class="kw">if</span> (<span class="kw">$</span>request-><span class="fn">filled</span>(<span class="st">'anciennete_min'</span>)) <span class="kw">$</span>query-><span class="fn">where</span>(<span class="st">'anciennete'</span>, <span class="st">'>='</span>, <span class="kw">$</span>request->anciennete_min);
+<span class="kw">if</span> (<span class="kw">$</span>request-><span class="fn">filled</span>(<span class="st">'salaire_min'</span>))    <span class="kw">$</span>query-><span class="fn">where</span>(<span class="st">'salaire'</span>, <span class="st">'>='</span>, <span class="kw">$</span>request->salaire_min);
+
+<span class="kw">$</span>praticiens = <span class="kw">$</span>query-><span class="fn">orderBy</span>(<span class="kw">$</span>sortBy, <span class="kw">$</span>sortOrder)-><span class="fn">paginate</span>(<span class="nm">20</span>)-><span class="fn">withQueryString</span>();</code></pre>
+      </div>
+
+      <h2>Ancienneté et grille salariale</h2>
+      <p>La mise à jour de la date d'embauche déclenche un <strong>trigger MySQL</strong> qui recalcule automatiquement l'ancienneté, l'échelon et le salaire via la table <code>grille_salariale</code>. Le formulaire n'est visible que pour les admins.</p>
+      <div class="code-block">
+        <div class="code-label">PraticienController.php — updateAnciennete()</div>
+        <pre><code><span class="kw">$</span>praticien = Praticien::<span class="fn">findOrFail</span>(<span class="kw">$</span>id);
+<span class="kw">$</span>praticien->date_embauche = <span class="kw">$</span>request->date_embauche;
+<span class="kw">$</span>praticien-><span class="fn">save</span>();       <span class="cm">// Le trigger recalcule ancienneté + échelon + salaire</span>
+<span class="kw">$</span>praticien-><span class="fn">refresh</span>();   <span class="cm">// Recharge les valeurs calculées</span>
+
+<span class="kw">return</span> redirect()-><span class="fn">route</span>(<span class="st">'praticiens.show'</span>, <span class="kw">$</span>id)
+    -><span class="fn">with</span>(<span class="st">'success'</span>, <span class="st">'Nouvel échelon : '</span> . <span class="kw">$</span>praticien->echelon
+        . <span class="st">', Nouveau salaire : '</span> . <span class="kw">$</span>praticien->salaire_format);</code></pre>
+      </div>
+
+      <h2>Statistiques</h2>
+      <p>La page <code>/statistiques</code> affiche une analyse globale : total des praticiens, salaire moyen, masse salariale mensuelle/annuelle, répartition par type et par échelon.</p>
+      <div class="code-block">
+        <div class="code-label">PraticienController.php — stats()</div>
+        <pre><code><span class="kw">$</span>stats = [
+    <span class="st">'total'</span>       => Praticien::<span class="fn">count</span>(),
+    <span class="st">'par_type'</span>    => Praticien::<span class="fn">select</span>(<span class="st">'code_type_praticien'</span>, DB::<span class="fn">raw</span>(<span class="st">'count(*) as total'</span>))
+                        -><span class="fn">groupBy</span>(<span class="st">'code_type_praticien'</span>)-><span class="fn">with</span>(<span class="st">'typePraticien'</span>)-><span class="fn">get</span>(),
+    <span class="st">'par_echelon'</span> => Praticien::<span class="fn">select</span>(<span class="st">'echelon'</span>, DB::<span class="fn">raw</span>(<span class="st">'count(*) as total'</span>))
+                        -><span class="fn">groupBy</span>(<span class="st">'echelon'</span>)-><span class="fn">orderBy</span>(<span class="st">'echelon'</span>)-><span class="fn">get</span>(),
+    <span class="st">'salaire_moyen'</span> => Praticien::<span class="fn">avg</span>(<span class="st">'salaire'</span>),
+    <span class="st">'salaire_total'</span> => Praticien::<span class="fn">sum</span>(<span class="st">'salaire'</span>),
+];</code></pre>
+      </div>
+
+      <h2>Vues Blade</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Vue</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>layout.blade.php</code></td><td>Layout commun : nav (Praticiens + Statistiques + déconnexion), messages flash, footer</td></tr>
+            <tr><td><code>auth/login.blade.php</code></td><td>Formulaire de connexion par nom d'utilisateur + mot de passe</td></tr>
+            <tr><td><code>praticiens/index.blade.php</code></td><td>Tableau paginé avec filtres (recherche, type, échelon, ancienneté, salaire) et tri par colonne</td></tr>
+            <tr><td><code>praticiens/show.blade.php</code></td><td>Fiche complète : infos personnelles, professionnelles, bloc salaire mensuel/annuel/échelon, formulaire ancienneté (admin)</td></tr>
+            <tr><td><code>praticiens/stats.blade.php</code></td><td>Cartes KPI, répartition par type (barres de progression), tableau par échelon</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-footer">
+        <div class="footer-copy">Copyright &copy; 2025 · AP-Corse</div>
+        <div class="content-footer-nav">
+          <button class="footer-nav-btn" onclick="showPage('mission1')">← Mission 1</button>
+          <button class="footer-nav-btn" onclick="showPage('mission3')">Mission 3 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─────────────────────────────
+         PAGE : MISSION 3
+    ───────────────────────────────── -->
+    <div class="page" id="page-mission3">
+      <div class="page-hero">
+        <div class="page-hero-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+          Mission 3
+        </div>
+        <h1>GSBNotes <span class="accent">— Flutter</span></h1>
+        <p class="page-hero-desc">Application mobile multi-plateforme Flutter / Dart permettant de consulter les praticiens du réseau GSB et leurs évaluations clients et experts.</p>
+        <div class="stack-row">
+          <span class="badge badge-blue">Dart</span>
+          <span class="badge badge-blue">Flutter 3.9.2+</span>
+          <span class="badge badge-pink">JWT Bearer</span>
+          <span class="badge badge-green">Material Design 3</span>
+          <span class="badge badge-gray">Android · iOS · Windows</span>
+        </div>
+      </div>
+
+      <blockquote>GSBNotes ne possède <strong>aucune base de données locale</strong>. Toutes les données sont fournies par l'<strong>API REST de GSBSalaires</strong> hébergée sur <code>http://172.23.80.1</code>.</blockquote>
+
+      <h2>Architecture</h2>
+      <div class="schema-box">GSBNotes/
+├── lib/
+│   ├── main.dart             # Point d'entrée (widget GSBApp)
+│   ├── auth_service.dart     # Service d'authentification JWT (singleton)
+│   ├── login_page.dart       # Écran de connexion
+│   ├── home_screen.dart      # Liste des praticiens (Accueil)
+│   └── details.dart          # Détail praticien + onglets notes
+├── pubspec.yaml              # Dépendances et configuration Flutter
+├── android/ · ios/ · windows/ · macos/ · linux/
+└── test/                     # Tests unitaires</div>
+
+      <h3>Hiérarchie des écrans</h3>
+      <div class="schema-box">main() → GSBApp → ListePage (liste praticiens)
+                      │
+                      ├── [non connecté] → LoginPage → retour liste
+                      │
+                      └── [tap praticien] → DetailPage (fiche + notes)
+                                              └── Onglets: Experts | Clients</div>
+
+      <h2>Endpoints API consommés</h2>
+      <div class="table-wrap">
+        <table class="api-row">
+          <thead><tr><th>Méthode</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/auth/login</code></td><td><span class="badge badge-gray">Public</span></td><td>Connexion → retourne le JWT</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/praticiens</code></td><td><span class="badge badge-gray">Public</span></td><td>Liste tous les praticiens</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/praticiens/{id}</code></td><td><span class="badge badge-gray">Public</span></td><td>Détail d'un praticien</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/v1/praticiens?sort=nom</code></td><td><span class="badge badge-gray">Public</span></td><td>Liste avec tri</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/notes/{id}</code></td><td><span class="badge badge-gray">Public</span></td><td>Notes d'un praticien</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/note/create</code></td><td><span class="badge badge-pink">JWT</span></td><td>Soumettre une nouvelle note</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Modèles de données</h2>
+      <h3>Praticien</h3>
+      <div class="code-block">
+        <div class="code-label">Dart — Praticien.fromJson</div>
+        <pre><code><span class="kw">class</span> <span class="tp">Praticien</span> {
+  <span class="kw">final</span> <span class="tp">int</span> id;
+  <span class="kw">final</span> <span class="tp">String</span> nom, prenom, type;
+  <span class="kw">final</span> <span class="tp">double</span> noteExpert, noteClient, noteGlobale;
+
+  <span class="kw">factory</span> Praticien.<span class="fn">fromJson</span>(<span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="kw">dynamic</span>&gt; j) => <span class="tp">Praticien</span>(
+    id:          j[<span class="st">'id'</span>],
+    nom:         j[<span class="st">'nom'</span>],
+    prenom:      j[<span class="st">'prenom'</span>],
+    type:        j[<span class="st">'type'</span>] ?? <span class="st">''</span>,
+    noteExpert:  (j[<span class="st">'note_expert'</span>] ?? <span class="nm">0</span>).toDouble(),
+    noteClient:  (j[<span class="st">'note_client'</span>] ?? <span class="nm">0</span>).toDouble(),
+    noteGlobale: (j[<span class="st">'note_globale'</span>] ?? <span class="nm">0</span>).toDouble(),
+  );
+}</code></pre>
+      </div>
+
+      <h2>Logique métier clé</h2>
+      <h3>Service d'authentification (singleton)</h3>
+      <div class="code-block">
+        <div class="code-label">auth_service.dart</div>
+        <pre><code><span class="kw">class</span> <span class="tp">AuthService</span> {
+  <span class="kw">static final</span> <span class="tp">AuthService</span> _instance = <span class="tp">AuthService</span>._internal();
+  <span class="kw">factory</span> <span class="fn">AuthService</span>() => _instance;
+  <span class="tp">String</span>? _token;
+
+  <span class="tp">bool</span> <span class="kw">get</span> isLoggedIn => _token != <span class="kw">null</span>;
+
+  <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt; <span class="fn">getAuthHeaders</span>() => {
+    <span class="st">'Authorization'</span>: <span class="st">'Bearer $_token'</span>,
+    <span class="st">'Content-Type'</span>: <span class="st">'application/json'</span>,
+  };
+
+  <span class="kw">void</span> <span class="fn">logout</span>() { _token = <span class="kw">null</span>; }
+}</code></pre>
+      </div>
+
+      <h3>Filtrage notes client vs expert</h3>
+      <div class="code-block">
+        <div class="code-label">details.dart — Filtrage</div>
+        <pre><code><span class="tp">List</span> notesClients = notes.<span class="fn">where</span>((n) => n[<span class="st">'id_expert'</span>] == <span class="kw">null</span>).<span class="fn">toList</span>();
+<span class="tp">List</span> notesExperts = notes.<span class="fn">where</span>((n) => n[<span class="st">'id_expert'</span>] != <span class="kw">null</span>).<span class="fn">toList</span>();</code></pre>
+      </div>
+
+      <h3>Recherche en temps réel</h3>
+      <div class="code-block">
+        <div class="code-label">home_screen.dart — Recherche</div>
+        <pre><code>onChanged: (value) <span class="kw">async</span> {
+  <span class="kw">if</span> (value.isEmpty) { <span class="fn">_load</span>(); <span class="kw">return</span>; }
+  <span class="kw">final</span> results = <span class="kw">await</span> http.<span class="fn">get</span>(
+    Uri.<span class="fn">parse</span>(<span class="st">'http://172.23.80.1/api/praticiens?sort=nom'</span>),
+    headers: {<span class="st">'Accept'</span>: <span class="st">'application/json'</span>},
+  );
+  <span class="fn">setState</span>(() {
+    _filtered = _praticiens.<span class="fn">where</span>((p) =>
+      p.nomComplet.<span class="fn">toLowerCase</span>().<span class="fn">contains</span>(value.<span class="fn">toLowerCase</span>())).<span class="fn">toList</span>();
+  });
+}</code></pre>
+      </div>
+
+      <h2>UI / UX</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Élément</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>CustomScrollView + SliverAppBar</code></td><td>En-tête déroulant sur la page de détail</td></tr>
+            <tr><td>Dégradé de couleurs</td><td>Fond AppBar en <code>LinearGradient</code> (primaire → secondaire)</td></tr>
+            <tr><td>Cartes Material</td><td>Affichage des praticiens dans la liste avec badges de type</td></tr>
+            <tr><td><code>TabBar</code></td><td>Onglets Notes Experts / Notes Clients dans le détail</td></tr>
+            <tr><td><code>CircularProgressIndicator</code></td><td>Indicateur de chargement lors des appels API</td></tr>
+            <tr><td><code>SnackBar</code></td><td>Retours visuels succès / erreur lors de la soumission</td></tr>
+            <tr><td>Écran d'erreur réseau</td><td>Affiché si l'API est inaccessible, avec bouton Réessayer</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="content-footer">
+        <div class="footer-copy">Copyright &copy; 2025 · AP-Corse</div>
+        <div class="content-footer-nav">
+          <button class="footer-nav-btn" onclick="showPage('mission2')">← Mission 2</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+const pages = ['home', 'mission1', 'mission2', 'mission3'];
+
+function showPage(id) {
+  pages.forEach(p => {
+    document.getElementById('page-' + p).classList.remove('active');
+    const nav = document.getElementById('nav-' + p);
+    if (nav) nav.classList.remove('active');
+  });
+  document.getElementById('page-' + id).classList.add('active');
+  const nav = document.getElementById('nav-' + id);
+  if (nav) nav.classList.add('active');
+  document.getElementById('main').scrollTop = 0;
+  // close sidebar on mobile
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// Handle hash on load
+const hash = location.hash.replace('#', '');
+if (pages.includes(hash)) showPage(hash);
+</script>
+</body>
+</html>
