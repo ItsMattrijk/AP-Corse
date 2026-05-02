@@ -46,12 +46,12 @@ Système RH central avec gestion des praticiens et de la grille salariale.
 
 Consultation et notation des praticiens du réseau GSB.
 
-- Liste des praticiens avec recherche et tri en temps réel
-- Fiche détaillée avec notes clients et experts
-- Soumission de nouvelles évaluations (commentaire + score)
-- Authentification JWT via l'API GSBSalaires
+- Annuaire avec **recherche locale** (nom ou type) et **tri API** (nom / note expert / note client)
+- Tuiles avec badge de type coloré, notes expert et client, note globale sur 5
+- Page de détail : SliverAppBar défilant, cartes de score avec étoiles, onglets Experts / Clients
+- Gestion des états : chargement, erreur réseau avec bouton Réessayer, pull-to-refresh
 
-**Stack :** Flutter · Dart · JWT · API REST
+**Stack :** Flutter · Dart · http · Material Design 3
 
 ---
 

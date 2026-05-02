@@ -1256,132 +1256,193 @@ dataGridView1.Columns[<span class="st">"idUtilisateurFK"</span>].Visible = <span
           Mission 3
         </div>
         <h1>GSBNotes <span class="accent">— Flutter</span></h1>
-        <p class="page-hero-desc">Application mobile multi-plateforme Flutter / Dart permettant de consulter les praticiens du réseau GSB et leurs évaluations clients et experts.</p>
+        <p class="page-hero-desc">Application mobile multi-plateforme Flutter / Dart permettant de consulter l'annuaire des praticiens GSB, leurs notes et évaluations clients et experts. Tout le code tient dans un seul fichier <code>main.dart</code>.</p>
         <div class="stack-row">
           <span class="badge badge-blue">Dart</span>
-          <span class="badge badge-blue">Flutter 3.9.2+</span>
-          <span class="badge badge-pink">JWT Bearer</span>
+          <span class="badge badge-blue">Flutter 3+</span>
           <span class="badge badge-green">Material Design 3</span>
+          <span class="badge badge-pink">http</span>
           <span class="badge badge-gray">Android · iOS · Windows</span>
         </div>
       </div>
 
-      <blockquote>GSBNotes ne possède <strong>aucune base de données locale</strong>. Toutes les données sont fournies par l'<strong>API REST de GSBSalaires</strong> hébergée sur <code>http://172.23.80.1</code>.</blockquote>
+      <blockquote>GSBNotes ne possède <strong>aucune base de données locale</strong>. Toutes les données sont fournies par l'<strong>API REST de GSBSalaires</strong> — configurée via <code>BASE_URL</code>.</blockquote>
 
       <h2>Architecture</h2>
-      <div class="schema-box">GSBNotes/
-├── lib/
-│   ├── main.dart             # Point d'entrée (widget GSBApp)
-│   ├── auth_service.dart     # Service d'authentification JWT (singleton)
-│   ├── login_page.dart       # Écran de connexion
-│   ├── home_screen.dart      # Liste des praticiens (Accueil)
-│   └── details.dart          # Détail praticien + onglets notes
-├── pubspec.yaml              # Dépendances et configuration Flutter
-├── android/ · ios/ · windows/ · macos/ · linux/
-└── test/                     # Tests unitaires</div>
+      <div class="schema-box">lib/
+└── main.dart          # Fichier unique — toute l'application
+    ├── CONFIG         # BASE_URL + constantes de couleurs
+    ├── MODÈLES        # Praticien · PraticienDetail · Evaluation
+    ├── API            # ApiService (getPraticiens, getDetail)
+    ├── APP            # GSBApp (MaterialApp + thème Material 3)
+    ├── PAGE LISTE     # ListePage + _ListePageState
+    │   ├── _buildHeader()    Header dégradé + barre de recherche
+    │   ├── _buildList()      ListView + RefreshIndicator
+    │   └── _buildError()     Écran d'erreur réseau
+    ├── BOUTON DE TRI  # _SortButton (PopupMenu : nom / expert / client)
+    ├── TUILE          # _PraticienTile · _NoteChip · _GlobalBadge · _Btn
+    └── PAGE DÉTAIL    # DetailPage + _DetailPageState
+        ├── SliverAppBar      Header défilant dégradé
+        ├── _ScoreCard        Cartes note expert / note client
+        ├── TabBar            Onglets Experts / Clients
+        └── _EvalList         Liste des évaluations avec étoiles</div>
 
-      <h3>Hiérarchie des écrans</h3>
-      <div class="schema-box">main() → GSBApp → ListePage (liste praticiens)
-                      │
-                      ├── [non connecté] → LoginPage → retour liste
-                      │
-                      └── [tap praticien] → DetailPage (fiche + notes)
-                                              └── Onglets: Experts | Clients</div>
+      <h2>Configuration</h2>
+      <div class="code-block">
+        <div class="code-label">main.dart — BASE_URL + palette</div>
+        <pre><code><span class="kw">const</span> <span class="tp">String</span> BASE_URL = <span class="st">'http://127.0.0.1:8000/api/v1'</span>;
 
-      <h2>Endpoints API consommés</h2>
+<span class="kw">const</span> <span class="tp">Color</span> kPrimary     = <span class="tp">Color</span>(<span class="nm">0xFF4F46E5</span>); <span class="cm">// Indigo</span>
+<span class="kw">const</span> <span class="tp">Color</span> kPrimaryDark = <span class="tp">Color</span>(<span class="nm">0xFF3730A3</span>);
+<span class="kw">const</span> <span class="tp">Color</span> kGreen       = <span class="tp">Color</span>(<span class="nm">0xFF16A34A</span>);
+<span class="kw">const</span> <span class="tp">Color</span> kOrange      = <span class="tp">Color</span>(<span class="nm">0xFFEA580C</span>);
+<span class="kw">const</span> <span class="tp">Color</span> kBlue        = <span class="tp">Color</span>(<span class="nm">0xFF2563EB</span>);
+<span class="kw">const</span> <span class="tp">Color</span> kPurple      = <span class="tp">Color</span>(<span class="nm">0xFF7C3AED</span>);</code></pre>
+      </div>
+
+      <h2>Modèles</h2>
+      <h3>Praticien — liste</h3>
       <div class="table-wrap">
-        <table class="api-row">
-          <thead><tr><th>Méthode</th><th>Endpoint</th><th>Auth</th><th>Description</th></tr></thead>
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
           <tbody>
-            <tr><td><span class="method method-post">POST</span></td><td><code>/api/auth/login</code></td><td><span class="badge badge-gray">Public</span></td><td>Connexion → retourne le JWT</td></tr>
-            <tr><td><span class="method method-get">GET</span></td><td><code>/api/praticiens</code></td><td><span class="badge badge-gray">Public</span></td><td>Liste tous les praticiens</td></tr>
-            <tr><td><span class="method method-get">GET</span></td><td><code>/api/praticiens/{id}</code></td><td><span class="badge badge-gray">Public</span></td><td>Détail d'un praticien</td></tr>
-            <tr><td><span class="method method-get">GET</span></td><td><code>/api/v1/praticiens?sort=nom</code></td><td><span class="badge badge-gray">Public</span></td><td>Liste avec tri</td></tr>
-            <tr><td><span class="method method-get">GET</span></td><td><code>/api/notes/{id}</code></td><td><span class="badge badge-gray">Public</span></td><td>Notes d'un praticien</td></tr>
-            <tr><td><span class="method method-post">POST</span></td><td><code>/api/note/create</code></td><td><span class="badge badge-pink">JWT</span></td><td>Soumettre une nouvelle note</td></tr>
+            <tr><td><code>id</code></td><td>int</td><td>Identifiant unique</td></tr>
+            <tr><td><code>nom</code> / <code>prenom</code></td><td>String</td><td>Identité — accesseur <code>nomComplet</code></td></tr>
+            <tr><td><code>type</code></td><td>String</td><td>Type de praticien (détermine la couleur du badge)</td></tr>
+            <tr><td><code>noteExpert</code></td><td>double</td><td>Moyenne des notes experts</td></tr>
+            <tr><td><code>noteClient</code></td><td>double</td><td>Moyenne des notes clients</td></tr>
+            <tr><td><code>noteGlobale</code></td><td>double</td><td>Note globale — <code>hasNotes</code> si > 0</td></tr>
           </tbody>
         </table>
       </div>
 
-      <h2>Modèles de données</h2>
-      <h3>Praticien</h3>
-      <div class="code-block">
-        <div class="code-label">Dart — Praticien.fromJson</div>
-        <pre><code><span class="kw">class</span> <span class="tp">Praticien</span> {
-  <span class="kw">final</span> <span class="tp">int</span> id;
-  <span class="kw">final</span> <span class="tp">String</span> nom, prenom, type;
-  <span class="kw">final</span> <span class="tp">double</span> noteExpert, noteClient, noteGlobale;
-
-  <span class="kw">factory</span> Praticien.<span class="fn">fromJson</span>(<span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="kw">dynamic</span>&gt; j) => <span class="tp">Praticien</span>(
-    id:          j[<span class="st">'id'</span>],
-    nom:         j[<span class="st">'nom'</span>],
-    prenom:      j[<span class="st">'prenom'</span>],
-    type:        j[<span class="st">'type'</span>] ?? <span class="st">''</span>,
-    noteExpert:  (j[<span class="st">'note_expert'</span>] ?? <span class="nm">0</span>).toDouble(),
-    noteClient:  (j[<span class="st">'note_client'</span>] ?? <span class="nm">0</span>).toDouble(),
-    noteGlobale: (j[<span class="st">'note_globale'</span>] ?? <span class="nm">0</span>).toDouble(),
-  );
-}</code></pre>
+      <h3>PraticienDetail — fiche complète</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>adresse</code></td><td>String</td><td>Adresse postale</td></tr>
+            <tr><td><code>ville</code></td><td>String</td><td>Nom de la ville</td></tr>
+            <tr><td><code>codePostal</code></td><td>String</td><td>Code postal</td></tr>
+            <tr><td><code>evaluationsExpert</code></td><td>List&lt;Evaluation&gt;</td><td>Liste des évaluations experts</td></tr>
+            <tr><td><code>evaluationsClient</code></td><td>List&lt;Evaluation&gt;</td><td>Liste des évaluations clients</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <h2>Logique métier clé</h2>
-      <h3>Service d'authentification (singleton)</h3>
-      <div class="code-block">
-        <div class="code-label">auth_service.dart</div>
-        <pre><code><span class="kw">class</span> <span class="tp">AuthService</span> {
-  <span class="kw">static final</span> <span class="tp">AuthService</span> _instance = <span class="tp">AuthService</span>._internal();
-  <span class="kw">factory</span> <span class="fn">AuthService</span>() => _instance;
-  <span class="tp">String</span>? _token;
-
-  <span class="tp">bool</span> <span class="kw">get</span> isLoggedIn => _token != <span class="kw">null</span>;
-
-  <span class="tp">Map</span>&lt;<span class="tp">String</span>, <span class="tp">String</span>&gt; <span class="fn">getAuthHeaders</span>() => {
-    <span class="st">'Authorization'</span>: <span class="st">'Bearer $_token'</span>,
-    <span class="st">'Content-Type'</span>: <span class="st">'application/json'</span>,
-  };
-
-  <span class="kw">void</span> <span class="fn">logout</span>() { _token = <span class="kw">null</span>; }
-}</code></pre>
+      <h3>Evaluation</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Champ</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>note</code></td><td>double</td><td>Score (sur 5)</td></tr>
+            <tr><td><code>commentaire</code></td><td>String</td><td>Texte de l'évaluation</td></tr>
+            <tr><td><code>date</code></td><td>String</td><td>Date de l'évaluation</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <h3>Filtrage notes client vs expert</h3>
-      <div class="code-block">
-        <div class="code-label">details.dart — Filtrage</div>
-        <pre><code><span class="tp">List</span> notesClients = notes.<span class="fn">where</span>((n) => n[<span class="st">'id_expert'</span>] == <span class="kw">null</span>).<span class="fn">toList</span>();
-<span class="tp">List</span> notesExperts = notes.<span class="fn">where</span>((n) => n[<span class="st">'id_expert'</span>] != <span class="kw">null</span>).<span class="fn">toList</span>();</code></pre>
+      <h2>API Service</h2>
+      <div class="table-wrap">
+        <table class="api-row">
+          <thead><tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/v1/praticiens?sort={sort}</code></td><td>Liste tous les praticiens — tri : <code>nom</code>, <code>expert</code>, <code>client</code></td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/v1/praticiens/{id}</code></td><td>Détail complet d'un praticien + ses évaluations</td></tr>
+          </tbody>
+        </table>
       </div>
 
-      <h3>Recherche en temps réel</h3>
       <div class="code-block">
-        <div class="code-label">home_screen.dart — Recherche</div>
-        <pre><code>onChanged: (value) <span class="kw">async</span> {
-  <span class="kw">if</span> (value.isEmpty) { <span class="fn">_load</span>(); <span class="kw">return</span>; }
-  <span class="kw">final</span> results = <span class="kw">await</span> http.<span class="fn">get</span>(
-    Uri.<span class="fn">parse</span>(<span class="st">'http://172.23.80.1/api/praticiens?sort=nom'</span>),
+        <div class="code-label">ApiService — getPraticiens()</div>
+        <pre><code><span class="kw">static</span> <span class="tp">Future</span>&lt;<span class="tp">List</span>&lt;<span class="tp">Praticien</span>&gt;&gt; <span class="fn">getPraticiens</span>({<span class="tp">String</span> sort = <span class="st">'nom'</span>}) <span class="kw">async</span> {
+  <span class="kw">final</span> res = <span class="kw">await</span> http.<span class="fn">get</span>(
+    Uri.<span class="fn">parse</span>(<span class="st">'$BASE_URL/praticiens?sort=$sort'</span>),
     headers: {<span class="st">'Accept'</span>: <span class="st">'application/json'</span>},
   );
+  <span class="kw">if</span> (res.statusCode == <span class="nm">200</span>) {
+    <span class="kw">final</span> data = <span class="fn">jsonDecode</span>(res.body);
+    <span class="kw">return</span> (data[<span class="st">'data'</span>] <span class="kw">as</span> <span class="tp">List</span>).<span class="fn">map</span>((e) => Praticien.<span class="fn">fromJson</span>(e)).<span class="fn">toList</span>();
+  }
+  <span class="kw">throw</span> <span class="tp">Exception</span>(<span class="st">'Erreur serveur (${res.statusCode})'</span>);
+}</code></pre>
+      </div>
+
+      <h2>Page Liste — ListePage</h2>
+      <p>Écran principal de l'application. Charge la liste des praticiens au démarrage et gère recherche, tri et états de chargement.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>État</th><th>Type</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>_praticiens</code></td><td>List&lt;Praticien&gt;</td><td>Liste complète chargée depuis l'API</td></tr>
+            <tr><td><code>_filtered</code></td><td>List&lt;Praticien&gt;</td><td>Liste filtrée affichée (recherche en local)</td></tr>
+            <tr><td><code>_sort</code></td><td>String</td><td>Critère de tri actif : <code>nom</code> / <code>expert</code> / <code>client</code></td></tr>
+            <tr><td><code>_searchCtrl</code></td><td>TextEditingController</td><td>Contrôleur de la barre de recherche</td></tr>
+            <tr><td><code>_loading</code> / <code>_error</code></td><td>bool / String</td><td>Gestion des états de chargement et d'erreur</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code-block">
+        <div class="code-label">Recherche locale — _search()</div>
+        <pre><code><span class="kw">void</span> <span class="fn">_search</span>(<span class="tp">String</span> q) {
   <span class="fn">setState</span>(() {
-    _filtered = _praticiens.<span class="fn">where</span>((p) =>
-      p.nomComplet.<span class="fn">toLowerCase</span>().<span class="fn">contains</span>(value.<span class="fn">toLowerCase</span>())).<span class="fn">toList</span>();
+    _filtered = q.isEmpty
+        ? _praticiens
+        : _praticiens.<span class="fn">where</span>((p) =>
+              p.nomComplet.<span class="fn">toLowerCase</span>().<span class="fn">contains</span>(q.<span class="fn">toLowerCase</span>()) ||
+              p.type.<span class="fn">toLowerCase</span>().<span class="fn">contains</span>(q.<span class="fn">toLowerCase</span>()))
+            .<span class="fn">toList</span>();
   });
 }</code></pre>
       </div>
 
-      <h2>UI / UX</h2>
+      <h3>Couleurs par type de praticien</h3>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Élément</th><th>Description</th></tr></thead>
+          <thead><tr><th>Type (contient)</th><th>Couleur</th></tr></thead>
           <tbody>
-            <tr><td><code>CustomScrollView + SliverAppBar</code></td><td>En-tête déroulant sur la page de détail</td></tr>
-            <tr><td>Dégradé de couleurs</td><td>Fond AppBar en <code>LinearGradient</code> (primaire → secondaire)</td></tr>
-            <tr><td>Cartes Material</td><td>Affichage des praticiens dans la liste avec badges de type</td></tr>
-            <tr><td><code>TabBar</code></td><td>Onglets Notes Experts / Notes Clients dans le détail</td></tr>
-            <tr><td><code>CircularProgressIndicator</code></td><td>Indicateur de chargement lors des appels API</td></tr>
-            <tr><td><code>SnackBar</code></td><td>Retours visuels succès / erreur lors de la soumission</td></tr>
-            <tr><td>Écran d'erreur réseau</td><td>Affiché si l'API est inaccessible, avec bouton Réessayer</td></tr>
+            <tr><td><code>Hospitalier</code></td><td><span class="badge badge-blue">kBlue — #2563EB</span></td></tr>
+            <tr><td><code>Ville</code></td><td><span class="badge badge-green">kGreen — #16A34A</span></td></tr>
+            <tr><td><code>Officine</code></td><td><span style="display:inline-flex;align-items:center;gap:4px;font-family:var(--font-mono);font-size:11px;padding:2px 8px;border-radius:20px;background:rgba(234,88,12,0.12);color:#ea580c;border:1px solid rgba(234,88,12,0.25);font-weight:600;">kOrange — #EA580C</span></td></tr>
+            <tr><td><code>santé</code></td><td><span class="badge badge-pink">kPurple — #7C3AED</span></td></tr>
+            <tr><td>Autres</td><td><span class="badge badge-gray">kPrimary — #4F46E5</span></td></tr>
           </tbody>
         </table>
       </div>
+
+      <h2>Page Détail — DetailPage</h2>
+      <p>Affiche la fiche complète d'un praticien avec un <code>CustomScrollView + SliverAppBar</code> défilant, deux cartes de score et un <code>TabBar</code> pour naviguer entre les évaluations.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Widget</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>SliverAppBar</code></td><td>En-tête défilant avec dégradé <code>kPrimary → kPrimaryDark</code>, avatar et badge de type</td></tr>
+            <tr><td><code>_ScoreCard</code></td><td>Carte note avec icône, score sur 5, étoiles générées et nombre d'avis</td></tr>
+            <tr><td><code>TabBar</code></td><td>Onglets « Experts (N) » / « Clients (N) » avec <code>TabController</code></td></tr>
+            <tr><td><code>_EvalList</code></td><td>Liste des évaluations : étoiles colorées, score, date et commentaire en italique</td></tr>
+            <tr><td><code>_InfoRow</code></td><td>Ligne d'info avec icône, label gris et valeur — utilisée pour adresse et ville</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Flux de navigation</h2>
+      <div class="schema-box">main() → GSBApp → ListePage
+                      │
+              [tap sur une tuile]
+                      │
+                      ▼
+               DetailPage(id, nom)
+               ┌──────────────────────────────┐
+               │  SliverAppBar (dégradé)       │
+               │  Card infos personnelles      │
+               │  _ScoreCard Expert | Client   │
+               │  TabBar                       │
+               │   ├── Experts → _EvalList     │
+               │   └── Clients → _EvalList     │
+               └──────────────────────────────┘</div>
 
       <div class="content-footer">
         <div class="footer-copy">Copyright &copy; 2025 · AP-Corse</div>
